@@ -1,0 +1,60 @@
+link:  https://dhyuthi-sparkling-web.lovable.app 
+
+Dhyuthi 7.0 — Official Website DocumentationTechnical and operational documentation for the Dhyuthi 7.0 landing page, the flagship technical festival hosted by the IEEE SCT Student Branch.1. Project OverviewThe Dhyuthi 7.0 web client is a single-page landing site designed with a dark, high-contrast, cyberpunk/cinematic aesthetic. The site manages event lifecycles across four phases:Track reveals (academic/competition domains)Pre-events (workshops, community mixers, teasers)Main competitions (hackathons, sprint challenges)Winner announcements & schedules (staged releases via visual status locks)2. System Architecture & Tech StackLayerTechnologyPurposeFrameworkTanStack Start (v1)SSR-ready, full-stack routing framework built on TanStack RouterUI LibraryReact 19 + TypeScriptComponent tree and static typingStylingTailwind CSS v4Utility-first styling with modern native CSS variable supportPrimitivesshadcn/ui (Button)Accessible base button componentsIconsLucide ReactClean, scalable vector interface iconsTypographyArchivo & Space GroteskDisplay headers and technical body typography via Google FontsRuntime / PMBunFast dependency management and local development runtime3. Directory LayoutPlaintext.
+├── public/
+│   ├── favicon.png                  # Browser tab icon
+│   └── logo.png                     # Fallback direct asset for IEEE SCT SB logo
+├── src/
+│   ├── assets/                      # Bundled image assets
+│   │   ├── circuit-sprint.jpg       # Track/event promo graphic
+│   │   ├── mechathon.jpg            # Mechanical/hardware event banner
+│   │   ├── pulse-night.jpg          # Cultural/pro-show event artwork
+│   │   └── SB_White_1.png.asset.json# Asset metadata pointer (Lovable runtime)
+│   ├── routes/
+│   │   ├── __root.tsx               # Root route, font imports, global <head> metadata
+│   │   └── index.tsx                # Primary view: Hero, Tracks, Drops, Schedule, Footer
+│   └── styles.css                   # Global design tokens, keyframe animations, utility classes
+├── package.json
+└── tsconfig.json
+4. Setup & Local DevelopmentPrerequisitesBun installed locally (v1.0 or higher recommended).Installation & ExecutionBash# 1. Install project dependencies
+bun install
+
+# 2. Start the local development server with hot module reloading
+bun dev
+
+# 3. Build for production
+bun run build
+5. Design System & TokensAll core theme parameters are defined via CSS variables in src/styles.css using the modern oklch color space:Color TokensBase Canvas (--background): oklch(0.135 0.014 240) — Near-black slate providing high contrast for glowing overlays.Primary Accent (--primary): oklch(0.84 0.145 205) — Electric cyan for active states, track tags, and borders.Secondary Accent (--secondary): oklch(0.625 0.255 17) — Signal red-orange for countdown timers, "LIVE" tags, and critical CTAs.TypographyHeadings (font-display): Archivo, sans-serif (heavy weights: 700, 800, 900)Body & Telemetry (font-body): Space Grotesk, monospace/sans-serif (regular & medium weights)Key Animations (src/styles.css)Signal Sweep: A sweeping gradient simulation across card borders.Scan Line: Vertical linear sweep simulating CRT monitor refresh displays.Ticker: Seamless infinite marquee for quick updates or sponsor ribbons.Tech Grid: Background SVG/CSS radial mask for subtle perspective grids.6. Content Configuration & Release ManagementThe application is structured so non-engineering coordinators can update festival reveals directly inside src/routes/index.tsx.Track Releases (trackReveals)Controls the high-level streams (e.g., Computer Science, Robotics, Design):TypeScript// src/routes/index.tsx
+export const trackReveals = [
+  {
+    id: "track-1",
+    title: "Build",              // Change to final revealed track name
+    description: "Hardware hackathon and embedded systems design.",
+    status: "REVEALED",          // "LOCKED" | "REVEALED"
+    image: "/assets/mechathon.jpg"
+  },
+  // ...
+];
+Staged Drops (drops)Controls pre-events, workshops, and competition cards:TypeScriptexport const drops = [
+  {
+    id: "drop-01",
+    title: "Circuit Sprint",
+    category: "Pre-Event",
+    tag: "NEXT DROP",            // Badges: "NEXT DROP" | "QUEUED" | "LOCKED" | "LIVE"
+    date: "TBA",
+    actionUrl: "#"
+  },
+  // ...
+];
+Schedule Timeline (schedule)Update this array as dates and venues are confirmed.TypeScriptexport const schedule = [
+  {
+    time: "Day 01 — 09:00 AM",
+    title: "Opening Keynote & Track Briefing",
+    venue: "Main Auditorium",
+    isConfirmed: true
+  }
+];
+7. Migration & Deployment NotesLogo Reference ResolutionThe code contains platform-specific asset bindings depending on your host:When building on Lovable: Keep the asset descriptor import:TypeScriptimport logo from "@/assets/SB_White_1.png.asset.json";
+// Applied as: <img src={logo.url} alt="IEEE SCT SB" />
+When deploying to Vercel, Netlify, or standard SSR hosting: Switch to the public direct path to prevent build errors:TypeScriptconst logo = "/logo.png";
+// Applied as: <img src={logo} alt="IEEE SCT SB" />
